@@ -1,6 +1,6 @@
 # Tools
 
-A set of tools for scraping and formatting text.
+A set of tools for scraping and formatting text.<br>
 
 ## Text To Groff
 
