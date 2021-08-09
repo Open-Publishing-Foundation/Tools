@@ -1,0 +1,18 @@
+[package]
+name = "text-to-groff"
+version = "0.1.0"
+description = "Convert text to groff/troff."
+license = "GPL v3"
+repository = "https://github.com/Open-Publishing-Foundation/tools"
+keywords = ["text", "troff","groff","typesetting"]
+categories = ["command-line-utilities","text-processing"]
+authors = ["Oliver Brotchie <o.brotchie@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+structopt = "0.3.22"
+regex = "1.5.4"
+
+[profile.release]
+lto = true
+panic = "abort"
