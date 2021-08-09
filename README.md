@@ -1,4 +1,4 @@
-<img height="250" width="250" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimage.flaticon.com%2Ficons%2Fpng%2F512%2F595%2F595569.png&f=1&nofb=1 "/>
+<img height="250" width="250" src="https://github.com/Open-Publishing-Foundation/Tools/blob/main/Icon%20+%20Text.png?raw=true" />
                                    
 # Tools
 
