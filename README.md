@@ -4,7 +4,7 @@
 
 A set of tools for scraping and formatting text.<br><br>
 
-## Text To Groff
+## text-to-groff
 
 Format text into groff/troff.
 
