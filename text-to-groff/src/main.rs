@@ -3,8 +3,28 @@ use std::iter::FromIterator;
 use std::path::PathBuf;
 use structopt::StructOpt;
 use std::str;
+use std::io::{self};
+use std::io::prelude::*;
 use regex::RegexSet;
+use itertools::Itertools;
 
+trait NextN {
+    fn next_n(&mut self,n:usize) -> Vec<&str>;
+}
+
+impl NextN for str::Split<'_, &str> {
+    fn next_n(&mut self,n:usize) -> Vec<&str> {
+        let i = if n < self.count() {n} else {self.count()};
+        let mut v = Vec::with_capacity(i);
+        for _ in 0..i {
+            match self.next(){
+                Some(e) => v.push(e),
+                None => unreachable!()
+            }
+        }
+        v
+    }
+}
 
 #[derive(Debug)]
 struct Pair(String,String);
@@ -12,10 +32,11 @@ struct Pair(String,String);
 impl str::FromStr for Pair {
     type Err = Box<dyn std::error::Error>;
     fn from_str(s: &str) ->  Result<Self,Self::Err>{
-        let vec = s.trim_start_matches("[").trim_end_matches("]").split(",").collect::<Vec<&str>>();
+        let vec = s.trim_start_matches('[').trim_end_matches(']').split(',').collect::<Vec<&str>>();
         Ok(Pair(vec[0].to_string(),vec[1].to_string()))
     }
 }
+
 
 struct Rules {
     set:RegexSet,
@@ -23,29 +44,20 @@ struct Rules {
 }
 
 impl Rules {
-    fn get(&self,s: &str) -> Option<String>{
-        let matches = self.set.matches(s);
-        if matches.matched_any() {
-            Some(self.values[matches.into_iter().collect::<Vec<_>>()[0]].to_owned())
-        } else {
-            None
+    fn get(&self,s: &str) -> Option<&str>{
+        match self.set.matches(s).into_iter().next() {
+            Some(e) => Some(&self.values[e]),
+            _ => None
         }
     }
 }
 
 impl FromIterator<Pair> for Rules {
     fn from_iter<I: IntoIterator<Item=Pair>>(iter: I) -> Self {
-        let mut set:Vec<String> = Vec::new();
-        let mut values:Vec<String> = Vec::new();
-
-        for i in iter {
-            set.push(i.0);
-            values.push(i.1);
-        }
-
+        let (set, values): (Vec<_>, Vec<_>) = iter.into_iter().map(|Pair(a,b)| (a, b)).unzip();
         Rules {
             set: RegexSet::new(set).expect("Error whilst compiling rules"),
-            values:values
+            values
         }
     }
 }
@@ -60,7 +72,7 @@ impl FromIterator<Pair> for Rules {
 struct Args {
     /// The path to your desired input.
     #[structopt(short, long, parse(from_os_str))]
-    input: PathBuf,
+    input: Option<PathBuf>,
     /// The path of the desired output.
     #[structopt(short, long, parse(from_os_str))]
     output: Option<PathBuf>,
@@ -73,24 +85,38 @@ struct Args {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let args = Args::from_args();
-    let mut buf:Vec<String> = Vec::new();
-    let input = fs::read_to_string(args.input)?;
     let rules: Rules = args.rules.into_iter().collect();
-    
-    
-
-
-    for word in input.split(" ") {
-        match rules.get(word) {
-            Some(rule)=>{
-                println!("{}",rule);
-            },
-            _ => {
-                buf.push(word.to_string())
-            }
+    let input = match args.input {
+        Some(e) => fs::read_to_string(e)?,
+        _ =>  {
+            let mut buf = String::new();
+            io::stdin().lock().read_to_string(&mut buf)?;
+            buf
         }
     };
 
+    let mut input = input.split(" ");
+    let mut buf: Vec<String> = Vec::new();
+
+    while let Some(word) = input.next() {
+        buf.push(
+            match rules.get(word) {
+                Some(rule) =>{
+                    // Interleave desired words into macro
+                    rule.split("{}").interleave(
+                        input.next_n(rule.matches("{}").count())
+                    ).collect()
+                },
+                _ => word.to_string()
+            }
+        )
+    }
+
+    // Output
+    match args.output {
+        Some(path) => fs::write(path,buf.join("\n"))?,
+        None => buf.into_iter().for_each(|e| println!("{}",e))
+    }
 
     Ok(())
 }
