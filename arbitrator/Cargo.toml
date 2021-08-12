@@ -1,7 +1,7 @@
 [package]
 name = "arbitrator"
 version = "0.1.0"
-description = "Apply rules to text when lines match regexes."
+description = "Format text based on a set of rules and regexes."
 license = "GPL-3.0"
 repository = "https://github.com/Open-Publishing-Foundation/tools/arbitrator"
 keywords = ["text", "troff","groff","typesetting"]

@@ -1,6 +1,6 @@
 # Arbitrator
 
-Apply rules to text when lines match regexes.
+Format text based on a set of rules and regexes.
 
 ## Installation
 
