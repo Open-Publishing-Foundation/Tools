@@ -4,14 +4,14 @@
 
 A set of tools for scraping and formatting text.<br><br>
 
-## text-to-groff
+## Arbitrator
 
-Format text into groff/troff.
+Format text based on a set of rules and regexes.
 
 ### Install
 
 ```shell
-cargo install text-to-groff
+cargo install arbitrator
 ```
 
 ### Usage
