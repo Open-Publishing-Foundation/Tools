@@ -8,12 +8,4 @@ A set of tools for scraping and formatting text.<br><br>
 
 Format text based on a set of rules and regexes.
 
-### Install
-
-```shell
-cargo install arbitrator
-```
-
-### Usage
-
-.
+[Link](https://github.com/Open-Publishing-Foundation/Tools/tree/main/arbitrator)
