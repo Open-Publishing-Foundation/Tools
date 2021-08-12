@@ -1,6 +1,6 @@
 [package]
 name = "arbitrator"
-version = "0.1.1"
+version = "0.1.2"
 description = "Format text based on a set of rules and regexes."
 license = "GPL-3.0"
 repository = "https://github.com/Open-Publishing-Foundation/tools/arbitrator"
