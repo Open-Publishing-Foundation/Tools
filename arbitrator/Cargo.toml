@@ -1,9 +1,9 @@
 [package]
-name = "text-to-groff"
+name = "arbitrator"
 version = "0.1.0"
-description = "Convert text to groff/troff."
+description = "Apply rules to text when lines match regexes."
 license = "GPL v3"
-repository = "https://github.com/Open-Publishing-Foundation/tools"
+repository = "https://github.com/Open-Publishing-Foundation/tools/arbitrator"
 keywords = ["text", "troff","groff","typesetting"]
 categories = ["command-line-utilities","text-processing"]
 authors = ["Oliver Brotchie <o.brotchie@gmail.com>"]
@@ -13,6 +13,7 @@ edition = "2018"
 structopt = "0.3.22"
 regex = "1.5.4"
 itertools = "0.10.1"
+serde_json = "1.0.64"
 
 [profile.release]
 lto = true
