@@ -1,3 +1,5 @@
+<img height="200" src="https://image.flaticon.com/icons/png/512/186/186337.png"/>
+
 # Arbitrator
 
 Format text based on a set of rules and regexes.
