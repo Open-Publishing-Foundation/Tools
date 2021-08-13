@@ -9,8 +9,9 @@ use regex::RegexSet;
 use itertools::Itertools;
 use serde_json::{Map,Value};
 
-
+/// Get the next n items from an iterator
 trait NextN {
+    /// Get the next n items from an iterator
     fn next_n(&mut self,n:usize) -> Vec<&str>;
 }
 
@@ -33,10 +34,11 @@ struct Rules {
 
 impl Rules{
     fn get(&self,s: &str) -> Option<(&str,usize)>{
-        match self.set.matches(s).into_iter().next() {
-            Some(e) => Some((&self.values[e],self.counts[e])),
-            _ => None
-        }
+        self.set
+            .matches(s)
+            .into_iter()
+            .next()
+            .map(|e| (self.values[e].as_str(),self.counts[e]))
     }
 }
 
@@ -101,8 +103,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         buf.push(
             match rules.get(line) {
                 Some((rule,count)) =>{
-                    if count == 0 {rule.to_string()} 
-                    else {
+
+                    // Test if the rule has any inserts
+                    if count == 0 {
+                        if rule.is_empty() {continue} 
+                        else {rule.to_string()}
+                    } else {
+                        
+                        // If it does, interpollate the requiered number of lines.
                         let mut v = Vec::with_capacity(count);
                         v.push(line);
                         for _ in 0..count-1 {
@@ -111,7 +119,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         rule.split("{}").interleave(v).collect()
                     }
                 },
-                _ => line.to_string()
+                None => line.to_string()
             }
         )
     }
